@@ -1,0 +1,2 @@
+# scd
+Simple Change Directory
