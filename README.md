@@ -1,2 +1,2 @@
-# scd
-Simple Change Directory
+# mcd
+Modern `cd`
