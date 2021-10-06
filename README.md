@@ -8,7 +8,7 @@ I've noticed [`weezel`](https://github.com/weezel) has made same kind of project
 Credits to him. 
 I don't exactly wan't to *copy* him, but to practice my C skills, to be clear.
 
-Myself, i don't really _love_ moving along the linux filesystem when it comes to larger paths.
+Myself, i don't really _love_ moving along the linux filesystem when it comes to longer paths.
 To prevent this, this app can store your most used paths and you can access them later easily.
 
 ## Installation 
