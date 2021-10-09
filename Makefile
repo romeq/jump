@@ -1,15 +1,16 @@
 CC=clang
 CFLAGS=-Wall -Wextra
+SRC = $(wildcard src/*.c)
+OBJ = $(SRC:c=o)
 
-all: *.o
-	$(CC) $(CFLAGS) *.o -o mcd
+mcd: $(OBJ)
+	$(CC) $(CFLAGS) $^ -o mcd
 
-test: *.o
-	$(CC) $(CFLAGS) *.o -o mcd_test
-	@./mcd_test
+.c.o:
+	@echo $@ ": " $<
+	$(CC) -o $@ -c $< $(CFLAGS)
 
-*.o: *.c
-	$(CC) $(CFLAGS) -c $?
+all: mcd
 
 clean:
-	rm -f *.o mcd_test
+	rm -f src/*.o
