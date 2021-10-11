@@ -42,7 +42,7 @@ After download, you should be able to compile the project with make:
 $ make clean all 
 
 # Optional: make available in PATH env
-$ mv mcd /usr/local/bin/mcd
+$ ln -s mcd /usr/local/bin/mcd
 ```
 
 ## Documentation
@@ -63,16 +63,16 @@ For more information about command substition, check [this](https://www.linuxjou
 You can easily save a new path for later like following
 
 ```sh
-# usage: mcd [path alias] [long, long path] [flags] 
+# usage: mcd [flags] [alias] [long path] 
 $ ./mcd website /var/www/html 
 ```
 
 ### Deleting a new path
-To delete a path, just put -d flag
+To delete a path, just put `-d` flag
 
 ```sh
-# usage: mcd [path alias] [long, long path] [flags] 
-$ ./mcd website -d
+# usage: mcd [flags] [alias] [long path] 
+$ ./mcd -d website
 ```
 
 ### Updating existing path
