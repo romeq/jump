@@ -7,10 +7,11 @@ mcd: $(OBJ)
 	$(CC) $(CFLAGS) $^ -o mcd
 
 .c.o:
-	@echo $@ ": " $<
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 all: mcd
 
 clean:
 	rm -f src/*.o
+
+.PHONY: all
