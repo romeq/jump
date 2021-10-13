@@ -9,7 +9,7 @@ Credits to him.
 I don't exactly wan't to *copy* him, but to practice my C skills, to be clear.
 
 Myself, i don't really _love_ moving along the linux filesystem when it comes to longer paths.
-To prevent this, this app can store your most used paths to local SQLite database and you can access them later easily with custom `alias`.
+To prevent this, this app can store paths of your choice, so you can access them easier later on.
 
 ## Installation 
 The easiest way to install is __Github's releases__ feature. That way you can download already compiled binary, and do whatever you want to do. More information below at `Downloading from release`.
