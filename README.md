@@ -2,26 +2,26 @@
 Easy alternative for long path aliases in shell configuration files (boring).
 
 ## Motivation
-You may just want faster way to navigate in your linux filesystem (like I did), or just get rid of always making alias for a path in your shell configuration file. This software is exactly for that, and uses SQLite to store the paths.
+You may just want a faster way to navigate in your filesystem chaos (like I did), or just get rid of always making alias for a path in your shell configuration file. This software is exactly for that, and uses SQLite to store the paths.
 
 I've noticed [`weezel`](https://github.com/weezel) has made same kind of project, and thought it would be fun to create it myself.
 Credits to him. 
-I don't exactly wan't to *copy* him, but to practice my C skills, to be clear.
+I don't exactly want to *copy* him, but to practice my C skills, to be clear.
 
-Myself, i don't really _love_ moving along the linux filesystem when it comes to longer paths.
+Myself, I don't really _love_ moving along the linux filesystem when it comes to longer paths.
 To prevent this, this app can store paths of your choice, so you can access them easier later on.
 
 ## Installation 
-The easiest way to install is __Github's releases__ feature. That way you can download already compiled binary, and do whatever you want to do. More information below at `Downloading from release`.
+The easiest way to install is __GitHub's releases__ feature. That way you can download already compiled binary, and do whatever you want to do. More information below at `Downloading from release`.
 
 Another possibility is to download and compile manually from source. You can do that if you want to contribute or just want to check source code yourself before running. 
 
 ### Downloading from release
-You can download the most latest version from github's [`releases`](https://github.com/toke8677/mcd/releases) tab.
+You can download the latest version from GitHub's [`releases`](https://github.com/toke8677/mcd/releases) tab.
 **Optional**: After that, you may want to move mcd to `/usr/local/bin/`, so you can access it later just by running `mcd` and not `/path/to/mcd`. This can be done by running `mv mcd /usr/local/bin/mcd`.
 
 ### Installing from source
-This option can be better for development, contributing or you may just want to be sure you downloaded correct binary. 
+This option can be better for development, contributing, or you may just want to be sure you downloaded the correct binary. 
 
 #### Download
 Though, if you want, you can download the source and build it locally:
@@ -49,15 +49,15 @@ $ ln -s mcd /usr/local/bin/mcd
 It *may* be easier to read a simple documentation than reading the source code to learn how this works.
 
 ### Using an alias
-To use a path, you can use a simple shell trick called command substition like following:
+To use a path, you can use a simple shell trick called command substitution like following:
 
 ```shell
 $ cd $(./mcd [alias]) 
 ```
 
-`./mcd [alias]`  returns the `path` linked to given `alias` argument, command substition then replaces the command inside `$()` with the command's output so that `cd` can use it.
+`./mcd [alias]`  returns the `path` linked to given `alias` argument, command substitution then replaces the command inside `$()` with the command's output so that `cd` can use it.
 
-For more information about command substition, check [this](https://www.linuxjournal.com/article/7385) article's "command substition" entry.
+For more information about command substitution, check [this](https://www.linuxjournal.com/article/7385) article's "command substitution" entry.
 
 ### Creating a new path
 You can easily save a new path for later like following
