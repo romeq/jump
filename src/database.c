@@ -11,6 +11,7 @@
 #include <sqlite3.h>
 #include <errno.h>
 
+#include "../include/extern.h"
 #include "../include/utils.h"
 #include "../include/database.h"
 

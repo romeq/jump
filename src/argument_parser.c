@@ -4,7 +4,9 @@
 
 #include <string.h>
 #include <stdio.h>
+
 #include "../include/utils.h"
+#include "../include/extern.h"
 #include "../include/argument_parser.h"
 
 int populate_default(struct arguments *options);
