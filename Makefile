@@ -1,5 +1,6 @@
 CC=clang
-CFLAGS=-Wall -Wextra
+CFLAGS+=-Wall -Wextra
+CFLAGS+=-l sqlite3
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:c=o)
 
