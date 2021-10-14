@@ -5,7 +5,7 @@
 #ifndef MCD_ARGUMENT_PARSER_H
 #define MCD_ARGUMENT_PARSER_H
 
-#include "utils.h" // max lengths
+#include "extern.h"
 
 struct arguments {
     char alias[ALIAS_MAX_LENGTH];

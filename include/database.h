@@ -4,6 +4,7 @@
 
 #ifndef MCD_DATABASE_H
 #define MCD_DATABASE_H
+
 #define DB_DIR "$HOME/.config/mcd"
 #define DB_FILENAME "config.db"
 
