@@ -10,6 +10,7 @@
 
 #include "../include/argument_parser.h"
 #include "../include/database.h"
+#include "../include/utils.h"
 
 int handle_arguments(struct arguments *args, int argc, char ** argv);
 
