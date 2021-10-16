@@ -20,7 +20,7 @@ verbose_usage()
     printf("Remove alias:\t mcd -d [alias] \n");
     printf("Reset database:\t mcd -r\n\n");
     printf("Optional flags:\n");
-    printf( "\t-d: Delete alias. Alias argument required.\n");
+    printf("\t-d: Delete alias. Alias argument required.\n");
     printf("\t-r: Reset database. This flag must be used alone, and asks for confirmation before continuing.\n");
 }
 
