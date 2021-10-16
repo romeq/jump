@@ -10,9 +10,9 @@
 
 struct DBHandler {
     sqlite3    *db_connection;
-    int         succeeded;
+    int         status;
 };
 
-struct DBHandler init_db();
+int init_db(struct DBHandler *);
 
 #endif //MCD_DATABASE_H

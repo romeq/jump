@@ -9,25 +9,21 @@
 #include "../include/extern.h"
 #include "../include/argument_parser.h"
 
-int populate_default(struct arguments *options);
+int populate_struct_defaults(struct arguments *options);
 int parse_flags(int argc, char **argv, struct arguments *args);
 int parse_and_populate_args(int argc, char **argv, struct arguments *args);
 
 int
 parse_arguments(struct arguments *args, int argc, char **argv)
 {
-    populate_default(args);
+    populate_struct_defaults(args);
 
-    int pf_status, handle_flags_status;
-
-    pf_status = parse_flags(argc, argv, args);
-    if (pf_status < 0) {
-        return pf_status;
+    if (parse_flags(argc, argv, args) < 0) {
+        return -1;
     }
 
-    handle_flags_status = parse_and_populate_args(argc, argv, args);
-    if (handle_flags_status < 0) {
-        return handle_flags_status;
+    if (parse_and_populate_args(argc, argv, args) < 0) {
+        return -1;
     }
 
     return 0;
@@ -37,6 +33,7 @@ int
 parse_and_populate_args(int argc, char **argv, struct arguments *args)
 {
     if (args->arg_delete_alias == 1) {
+
         if (argc != 3) {
             print_err("Invalid amount of arguments");
             return -1;
@@ -50,14 +47,8 @@ parse_and_populate_args(int argc, char **argv, struct arguments *args)
             return -1;
         }
 
-    } else if (args->reset_database == 1 || args->help == 1) {
-        if (argc != 2) {
-            print_err("Invalid amount of arguments: flag must be used alone");
-            return -1;
-        }
-
     } else {
-        char pred_buf_overflow_msg[] =
+        char *pred_buf_overflow_msg =
                 "Oops! I can only have the first 255 letters, maybe try shorter alias?";
 
         switch(argc) {
@@ -115,8 +106,8 @@ parse_flags(int argc, char **argv, struct arguments *args)
                 ++flag_count;
                 break;
             default:
-                fprintf(stderr, "(%s) Invalid flag: %s\n",
-                        "WARNING", argv[option]);
+                fprintf(stderr, "Invalid flag: '%s'\n",
+                        argv[option]);
                 return -1;
         }
 
@@ -131,7 +122,7 @@ parse_flags(int argc, char **argv, struct arguments *args)
 }
 
 int
-populate_default(struct arguments *options)
+populate_struct_defaults(struct arguments *options)
 {
     // \0 == NULL
     strlcpy(options->alias, "\0", sizeof(options->alias));

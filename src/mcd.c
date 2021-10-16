@@ -12,7 +12,7 @@
 #include "../include/database.h"
 #include "../include/utils.h"
 
-int handle_arguments(struct arguments *args, int argc, char ** argv);
+int handle_arguments(struct arguments *, int, sqlite3 *);
 
 int
 main(int argc, char *argv[])
@@ -20,33 +20,43 @@ main(int argc, char *argv[])
     struct arguments args;
     struct DBHandler db_handler;
 
-    if (handle_arguments(&args, argc, argv) < 0) {
-        return EPERM;
-    }
+    if (init_db(&db_handler) < 0)
+        return 1;
 
-    db_handler = init_db();
-    if (db_handler.succeeded < 0) {
-        return EPERM;
-    }
+    if (parse_arguments(&args, argc, argv) < 0)
+        return 1;
+
+    if (handle_arguments(&args, argc, db_handler.db_connection) < 0)
+        return 1;
 
     sqlite3_close(db_handler.db_connection);
     return EXIT_SUCCESS;
 }
 
 int
-handle_arguments(struct arguments *args, int argc, char ** argv)
+handle_arguments(struct arguments *args, int argc, sqlite3 *db)
 {
-    int parse_status;
-    if ((parse_status = parse_arguments(args, argc, argv)) < 0) {
-        return parse_status;
-    }
+    if (argc == 2) {
+        if (args->help == 1) {
+            verbose_usage();
+        }
 
-    if (args->help == 1) {
-        verbose_usage();
-    }
+        if (args->reset_database == 1) {
 
-    if (strncmp(args->alias, "_test", sizeof(args->alias)) == 0) {
-        printf("/Users/toke019\n");
+            print_err("Reset db");
+        }
+
+        if (strlen(args->alias)) {
+            printf("/Users/toke019/Documents/Development/mcd\n");
+        }
+    } else if (argc == 3) {
+        if (args->arg_delete_alias && strlen(args->alias) > 0) {
+            print_err("delete alias here");
+        }
+
+        if (strlen(args->alias) > 0 && strlen(args->path) > 0) {
+            print_err("create new alias here");
+        }
     }
 
     return EXIT_SUCCESS;

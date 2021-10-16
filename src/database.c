@@ -15,29 +15,70 @@
 #include "../include/utils.h"
 #include "../include/database.h"
 
-int     validate_DB_existence(char *, char *);
-int     get_db_path(char *, char *);
+int         validate_DB_existence(char *, char *);
+int         get_db_path(char *, char *);
+int         populate_with_defaults(sqlite3 *);
+sqlite3*    get_connection(char *, char *);
 
-
-struct DBHandler
-init_db() {
-    sqlite3            *db;
-    struct DBHandler    db_handler = {0, 0};
-    char                db_path[PATH_MAX_LENGTH];
-    char                cfg_full_path[PATH_MAX_LENGTH];
+int
+init_db(struct DBHandler *dest_controller) {
+    sqlite3 *db = NULL;
+    char db_path[PATH_MAX_LENGTH];
+    char cfg_full_path[PATH_MAX_LENGTH];
 
     get_db_path(db_path, cfg_full_path);
 
-    int err;
-    if ((err = validate_DB_existence(db_path, cfg_full_path)) < 0) {
-        db_handler.succeeded = 0;
-        return db_handler;
+    if ((db = get_connection(db_path, cfg_full_path)) == NULL)
+        return -1;
+
+    if (populate_with_defaults(db) < 0)
+        return -1;
+
+    dest_controller->db_connection = db;
+    return EXIT_SUCCESS;
+}
+
+sqlite3*
+get_connection(char *dir_path, char *file_path)
+{
+    if (validate_DB_existence(dir_path, file_path) < 0) {
+        print_err("Database doesn't exist!");
+        return NULL;
     }
 
-    sqlite3_open(cfg_full_path, &db);
-    db_handler.db_connection = db;
+    sqlite3 *db = NULL;
+    if (sqlite3_open(file_path, &db) != SQLITE_OK) {
+        print_err("Database connection couldn't be opened.");
+        return NULL;
+    }
 
-    return db_handler;
+    return db;
+}
+
+int
+populate_with_defaults(sqlite3 *controller)
+{
+    if (controller == NULL) {
+        print_err("No database controller received");
+        return -1;
+    }
+    char *sql_statement = "CREATE TABLE IF NOT EXISTS paths("\
+        "alias VARCHAR(255) NOT NULL,"\
+        "path VARCHAR(255) NOT NULL"\
+    ")";
+    char *errmsg;
+    int err;
+    err = sqlite3_exec(controller, sql_statement, NULL, 0, &errmsg);
+
+    if (err != SQLITE_OK) {
+        fprintf(stdout, "(%s) Unable to create table in database\n",
+                "ERROR");
+
+        sqlite3_free(errmsg);
+        return -1;
+    }
+
+    return 0;
 }
 
 int
@@ -64,7 +105,7 @@ validate_DB_existence(char *config_dir, char *config_full_path)
 
     struct stat cfg_full_stat = {0};
     if (stat(config_full_path, &cfg_full_stat) == -1) {
-        if (fopen(config_full_path, "w")==NULL) {
+        if (fopen(config_full_path, "w") == NULL) {
             print_err("Unable to create a new database, sorry! ");
             return -1;
         }
@@ -72,7 +113,6 @@ validate_DB_existence(char *config_dir, char *config_full_path)
 
     return 0;
 }
-
 
 int
 get_db_path(char *dest_dir, char *dest_full)
@@ -84,11 +124,12 @@ get_db_path(char *dest_dir, char *dest_full)
 
     xdg_config_home = getenv("XDG_CONFIG_HOME");
     standard_exists = xdg_config_home != NULL &&
-            strlen(xdg_config_home) > 3;
+        strlen(xdg_config_home) > 3;
 
     if (standard_exists == 1) {
-        strlcpy(config_home, xdg_config_home, PATH_MAX_LENGTH-1);
-    } else {
+        strlcpy(config_home, xdg_config_home, PATH_MAX_LENGTH - 1);
+    }
+    else {
         wordexp_t p;
         wordexp( DB_DIR , &p, 0 );
         strlcpy(config_home, *p.we_wordv, PATH_MAX_LENGTH-1);
