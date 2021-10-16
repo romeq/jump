@@ -38,11 +38,11 @@ $ git clone git@github.com:toke8677/mcd.git
 After download, you should be able to compile the project with make:
 
 ```sh
-# clean object files and compile 
-$ make clean all 
+# clean object files and compile with optimization flags 
+$ make clean release
 
-# Optional: make available in PATH env
-$ ln -s mcd /usr/local/bin/mcd
+# Optional: make available anywhere
+$ cp mcd /usr/local/bin/mcd
 ```
 
 ## Documentation
