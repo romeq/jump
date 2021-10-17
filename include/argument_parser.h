@@ -2,8 +2,8 @@
 // Created by toke019 on 8.10.2021.
 //
 
-#ifndef MCD_ARGUMENT_PARSER_H
-#define MCD_ARGUMENT_PARSER_H
+#ifndef JUMP_ARGUMENT_PARSER_H
+#define JUMP_ARGUMENT_PARSER_H
 
 #include "extern.h"
 
@@ -17,4 +17,4 @@ struct arguments {
 
 int parse_arguments(struct arguments *args, int argc, char **argv);
 
-#endif //MCD_ARGUMENT_PARSER_H
+#endif //JUMP_ARGUMENT_PARSER_H
