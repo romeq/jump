@@ -5,16 +5,16 @@ RELEASE_FLAGS=-O3
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:c=o)
 
-mcd: $(OBJ)
-	$(CC) $(CFLAGS) $^ -o mcd
+jump: $(OBJ)
+	$(CC) $(CFLAGS) $^ -o jmp
 
 release: $(OBJ)
-	$(CC) $(CFLAGS) $(RELEASE_FLAGS) $^ -o mcd
+	$(CC) $(CFLAGS) $(RELEASE_FLAGS) $^ -o jmp
 
 .c.o:
 	$(CC) -o $@ -c $< $(CFLAGS)
 
-all: mcd
+all: jump
 
 clean:
 	rm -f src/*.o
