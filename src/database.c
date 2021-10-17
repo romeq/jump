@@ -110,6 +110,7 @@ delete_record_by_alias(const char *keyword, sqlite3 *controller)
 sqlite3*
 get_connection(char *dir_path, char *file_path)
 {
+
     sqlite3 *db = NULL;
     if (validate_DB_existence(dir_path, file_path) < 0)
         return NULL;
@@ -302,24 +303,27 @@ get_db_path(char *dest_dir, char *dest_full)
     char    config_home[PATH_MAX_LENGTH];
     char    config_full[PATH_MAX_LENGTH];
 
-    strlcpy(xdg_config_home, getenv("XDG_CONFIG_HOME"), PATH_MAX_LENGTH - 1);
+    char *env_get = getenv("XDG_CONFIG_HOME");
 
-    struct stat xdg_standard_exists = {0};
-    if (stat(xdg_config_home, &xdg_standard_exists) == -1) {
-        if (confirm("Custom config directory was not found. Do you want to create it?") == 0) {
-            return -1;
-        }
-        else {
-            if (mkdir(xdg_config_home, 0755) < 0) {
-                print_err("Unable to create config directory, does parent directories for it exist?");
+    standard_exists = env_get != NULL && strlen(env_get) > 0;
+
+    if (standard_exists == 1) {
+        strlcpy(xdg_config_home, env_get, PATH_MAX_LENGTH - 1);
+
+        struct stat xdg_standard_exists = {0};
+        if (stat(xdg_config_home, &xdg_standard_exists) == -1) {
+            printf("Custom directory: %s\n", xdg_config_home);
+            if (confirm("Preferred config directory was given, but not found. Do you want to create it now?") == 0) {
                 return -1;
             }
+            else {
+                if (mkdir(xdg_config_home, 0755) < 0) {
+                    print_err("Unable to create config directory. Do you have correct rights, and does parent directories for it exist?");
+                    return -1;
+                }
+            }
         }
-    }
 
-    standard_exists = *xdg_config_home &&
-        strlen(xdg_config_home) > 3;
-    if (standard_exists == 1) {
         if (strncmp(&xdg_config_home[strlen(xdg_config_home)-1], "/", PATH_MAX_LENGTH - 1)) {
             strlcat(xdg_config_home, "/", PATH_MAX_LENGTH - 1);
         }
