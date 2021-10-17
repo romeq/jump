@@ -39,6 +39,8 @@ handle_arguments(struct arguments *args, int argc, sqlite3 *controller)
     if (argc == 2) {
         if (args->help == 1) {
             verbose_usage();
+
+            return 0;
         }
 
         if (args->reset_database == 1) {
@@ -48,11 +50,11 @@ handle_arguments(struct arguments *args, int argc, sqlite3 *controller)
                     return -1;
                 } else {
                     printf("(SUCCESS) Process succeeded :)\n");
-                    return EXIT_SUCCESS;
+                    return 0;
                 }
             } else {
                 printf("Abort.\n");
-                return EXIT_SUCCESS;
+                return 0;
             }
         }
 
@@ -76,6 +78,7 @@ handle_arguments(struct arguments *args, int argc, sqlite3 *controller)
             else
                 printf("(%s) Record deleted\n", "SUCCESS");
 
+            return 0;
         }
 
         if (strlen(args->alias) > 0 && strlen(args->path) > 0) {
@@ -95,11 +98,11 @@ handle_arguments(struct arguments *args, int argc, sqlite3 *controller)
                 print_err("Couldn't finish query, error occurred");
                 return -1;
             } else {
-                printf("%s\n", args->path); // created
+                printf("%s\n", absolute_path); // created
                 return 0;
             }
         }
     }
 
-    return EXIT_SUCCESS;
+    return 0;
 }

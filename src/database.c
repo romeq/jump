@@ -26,9 +26,12 @@ init_db() {
     char db_path[PATH_MAX_LENGTH];
     char cfg_full_path[PATH_MAX_LENGTH];
 
-    get_db_path(db_path, cfg_full_path);
+    if (get_db_path(db_path, cfg_full_path) < 0)
+        return NULL;
 
-    db = get_connection(db_path, cfg_full_path);
+    if ((db = get_connection(db_path, cfg_full_path)) == NULL)
+        return NULL;
+
     if (populate_with_defaults(db) < 0)
         return NULL;
 
@@ -107,12 +110,10 @@ delete_record_by_alias(const char *keyword, sqlite3 *controller)
 sqlite3*
 get_connection(char *dir_path, char *file_path)
 {
-    if (validate_DB_existence(dir_path, file_path) < 0) {
-        print_err("Database doesn't exist!");
-        return NULL;
-    }
-
     sqlite3 *db = NULL;
+    if (validate_DB_existence(dir_path, file_path) < 0)
+        return NULL;
+
     if (sqlite3_open(file_path, &db) != SQLITE_OK) {
         print_err("Database connection couldn't be opened.");
         return NULL;
@@ -179,7 +180,6 @@ populate_with_defaults(sqlite3 *controller)
     return 0;
 }
 
-// TODO: finish him
 int
 alias_exists(const char *keyword, sqlite3 *controller)
 {
@@ -272,22 +272,21 @@ validate_DB_existence(char *config_dir, char *config_full_path)
             switch (errno) {
                 case EACCES:
                     print_err("Unable to create the config folder: Permission denied");
-                    break;
+                    return -1;
                 case EEXIST:
                     print_err("Unable to create the config folder: Already exists");
-                    break;
+                    return -1;
                 default:
                     print_err("Unable to create a config folder, sorry!");
-                    break;
+                    return -1;
             }
-            return -1;
         }
     }
 
     struct stat cfg_full_stat = {0};
     if (stat(config_full_path, &cfg_full_stat) == -1) {
         if (fopen(config_full_path, "w") == NULL) {
-            print_err("Unable to create a new database, sorry! ");
+            print_err("Unable to create a new database, sorry!");
             return -1;
         }
     }
@@ -299,17 +298,35 @@ int
 get_db_path(char *dest_dir, char *dest_full)
 {
     int     standard_exists;
-    char   *xdg_config_home;
+    char    xdg_config_home[PATH_MAX_LENGTH];
     char    config_home[PATH_MAX_LENGTH];
     char    config_full[PATH_MAX_LENGTH];
 
-    xdg_config_home = getenv("XDG_CONFIG_HOME");
-    standard_exists = xdg_config_home != NULL &&
-        strlen(xdg_config_home) > 3;
+    strlcpy(xdg_config_home, getenv("XDG_CONFIG_HOME"), PATH_MAX_LENGTH - 1);
 
+    struct stat xdg_standard_exists = {0};
+    if (stat(xdg_config_home, &xdg_standard_exists) == -1) {
+        if (confirm("Custom config directory was not found. Do you want to create it?") == 0) {
+            return -1;
+        }
+        else {
+            if (mkdir(xdg_config_home, 0755) < 0) {
+                print_err("Unable to create config directory, does parent directories for it exist?");
+                return -1;
+            }
+        }
+    }
+
+    standard_exists = *xdg_config_home &&
+        strlen(xdg_config_home) > 3;
     if (standard_exists == 1) {
+        if (strncmp(&xdg_config_home[strlen(xdg_config_home)-1], "/", PATH_MAX_LENGTH - 1)) {
+            strlcat(xdg_config_home, "/", PATH_MAX_LENGTH - 1);
+        }
+        strlcat(xdg_config_home, "jump/", PATH_MAX_LENGTH - 1);
         strlcpy(config_home, xdg_config_home, PATH_MAX_LENGTH - 1);
     }
+
     else {
         wordexp_t p;
         wordexp( DB_DIR , &p, 0 );
@@ -317,7 +334,7 @@ get_db_path(char *dest_dir, char *dest_full)
         wordfree(&p);
     }
 
-    if (strncmp(&config_home[strlen(config_home)], "/", 1) != 0) {
+    if (strncmp(&config_home[strlen(config_home)-1], "/", 1) != 0) {
         strlcat(config_home, "/", PATH_MAX_LENGTH);
     }
 
