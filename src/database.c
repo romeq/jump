@@ -6,7 +6,6 @@
 #include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
-
 #include <wordexp.h>
 #include <sqlite3.h>
 #include <errno.h>
@@ -18,26 +17,93 @@
 int         validate_DB_existence(char *, char *);
 int         get_db_path(char *, char *);
 int         populate_with_defaults(sqlite3 *);
+int         execute_query(const char *query, sqlite3 *controller);
 sqlite3*    get_connection(char *, char *);
 
-int
-init_db(struct DBHandler *dest_controller) {
+sqlite3*
+init_db() {
     sqlite3 *db = NULL;
     char db_path[PATH_MAX_LENGTH];
     char cfg_full_path[PATH_MAX_LENGTH];
 
     get_db_path(db_path, cfg_full_path);
 
-    if ((db = get_connection(db_path, cfg_full_path)) == NULL)
-        return -1;
-
+    db = get_connection(db_path, cfg_full_path);
     if (populate_with_defaults(db) < 0)
-        return -1;
+        return NULL;
 
-    dest_controller->db_connection = db;
-    return EXIT_SUCCESS;
+    return db;
 }
 
+int
+new_path(const char *alias, const char *path, sqlite3 *controller)
+{
+    int rc;
+    sqlite3_stmt *statement;
+    const char *query = "INSERT INTO config(alias, path) VALUES (?, ?)";
+    rc =
+        sqlite3_prepare_v2(controller, query, -1, &statement, 0);
+
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "(%s) Unable to prepare statement: %s\n",
+                "ERROR", sqlite3_errmsg(controller));
+        return -1;
+    }
+
+    sqlite3_bind_text(statement, 1, alias, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(statement, 2, path, -1, SQLITE_TRANSIENT);
+
+    rc = sqlite3_step(statement);
+    if (rc != SQLITE_DONE) {
+        printf("(%s) Execution failed: %s\n",
+               "ERROR", sqlite3_errmsg(controller));
+        sqlite3_finalize(statement);
+        return -1;
+    }
+
+    sqlite3_finalize(statement);
+
+    return 0;
+}
+
+// TODO: verify that the alias even exists before running delete query
+int
+delete_record_by_alias(const char *keyword, sqlite3 *controller)
+{
+    if (alias_exists(keyword, controller) == 0) {
+        print_err("Alias not found, can not delete");
+        return -1;
+    }
+
+    int rc;
+    sqlite3_stmt *statement;
+    const char *query = "DELETE FROM config WHERE alias = ?";
+
+    rc = sqlite3_prepare_v2(controller, query, -1, &statement,0 );
+
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "(%s) Unable to prepare statement: %s\n",
+                "ERROR", sqlite3_errmsg(controller));
+        return -1;
+    }
+
+    sqlite3_bind_text(statement, 1, keyword, -1, NULL);
+
+    rc = sqlite3_step(statement);
+    if (rc != SQLITE_DONE) {
+        printf("(%s) Execution failed: %s\n",
+               "ERROR", sqlite3_errmsg(controller));
+
+        sqlite3_finalize(statement);
+        return -1;
+    }
+
+    sqlite3_finalize(statement);
+
+    return 0;
+}
+
+// returns connection to database
 sqlite3*
 get_connection(char *dir_path, char *file_path)
 {
@@ -55,32 +121,147 @@ get_connection(char *dir_path, char *file_path)
     return db;
 }
 
+// reset database; delete all records
+// it does not ask confirmation, so please do that yourself.
 int
-populate_with_defaults(sqlite3 *controller)
+reset_table(sqlite3 *controller)
 {
-    if (controller == NULL) {
-        print_err("No database controller received");
-        return -1;
-    }
-    char *sql_statement = "CREATE TABLE IF NOT EXISTS paths("\
-        "alias VARCHAR(255) NOT NULL,"\
-        "path VARCHAR(255) NOT NULL"\
-    ")";
-    char *errmsg;
-    int err;
-    err = sqlite3_exec(controller, sql_statement, NULL, 0, &errmsg);
-
-    if (err != SQLITE_OK) {
-        fprintf(stdout, "(%s) Unable to create table in database\n",
-                "ERROR");
-
-        sqlite3_free(errmsg);
+    const char *sql_query = "DELETE FROM config;";
+    if (execute_query(sql_query, controller) < 0) {
         return -1;
     }
 
     return 0;
 }
 
+// I know, I know. It's unnecessary, but it may help in future if there is more actions.
+int
+execute_query(const char *query, sqlite3 *controller)
+{
+    if (controller == NULL) {
+        print_err("No database controller received");
+        return -1;
+    }
+
+    char *errmsg;
+    int err;
+    err = sqlite3_exec(controller, query, NULL, 0, &errmsg);
+
+    if (err != SQLITE_OK) {
+        fprintf(stderr, "(%s) Unable to create table in database: %s\n",
+                "ERROR", errmsg);
+
+        sqlite3_free(errmsg);
+        return -1;
+    }
+
+    sqlite3_free(errmsg);
+    return 0;
+}
+
+// Creates table if it does not exist already; e.g. setup database
+int
+populate_with_defaults(sqlite3 *controller)
+{
+    char *sql_statement = "CREATE TABLE IF NOT EXISTS config("\
+        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "alias VARCHAR(255) NOT NULL,"\
+        "path VARCHAR(255) NOT NULL,"\
+        "UNIQUE(alias)"\
+    ")";
+
+    if (execute_query(sql_statement, controller) < 0) {
+        fprintf(stderr, "Unable to execute query (@%s): %s\n",
+                __func__, sqlite3_errmsg(controller));
+        return -1;
+    }
+
+    return 0;
+}
+
+// TODO: finish him
+int
+alias_exists(const char *keyword, sqlite3 *controller)
+{
+    int rc;
+    sqlite3_stmt *statement;
+    const char *query = "SELECT path FROM config WHERE alias = ?";
+
+    if (strlen(keyword) > 64) {
+        print_err("Too long keyword");
+        return -1;
+    }
+    rc = sqlite3_prepare_v2(controller, query, -1, &statement, 0);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "(%s) Unable to prepare statement: %s\n",
+                "ERROR", sqlite3_errmsg(controller));
+
+        return -1;
+    }
+
+    sqlite3_bind_text(statement, 1, keyword, -1, NULL);
+
+    rc = sqlite3_step(statement);
+    if (rc != SQLITE_DONE && rc != SQLITE_ROW) {
+        printf("(%s) Execution failed: %s\n", "ERROR",
+               sqlite3_errmsg(controller));
+        sqlite3_finalize(statement);
+        return -1;
+    } else if (rc == SQLITE_DONE) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+// search records by alias
+int
+find_record_by_alias(const char *keyword, sqlite3 *controller, char *dest)
+{
+    int rc;
+    sqlite3_stmt *statement;
+    const char *query = "SELECT path FROM config WHERE alias = ?";
+
+    if (strlen(keyword) > 64) {
+        print_err("Too long keyword");
+
+        return -1;
+    }
+
+    rc = sqlite3_prepare_v2(controller, query, -1, &statement, 0);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "(%s) Unable to prepare statement: %s\n",
+                "ERROR", sqlite3_errmsg(controller));
+
+        return -1;
+    }
+
+    sqlite3_bind_text(statement, 1, keyword, -1, NULL);
+
+    rc = sqlite3_step(statement);
+
+    const char *result;
+    switch (rc) {
+        case SQLITE_DONE:
+            print_err("No results found.");
+            sqlite3_finalize(statement);
+            return 0;
+        case SQLITE_ROW:
+            result = (const char *) sqlite3_column_text(statement, 0);
+            strlcpy(dest, result, PATH_MAX_LENGTH - 1);
+            sqlite3_finalize(statement);
+            break;
+        default:
+            printf("(%s) Execution failed: %s\n", "ERROR",
+                   sqlite3_errmsg(controller));
+            sqlite3_finalize(statement);
+            return -1;
+    }
+
+    return 0;
+}
+
+// Create configuration files and folders, if they don't exist.
 int
 validate_DB_existence(char *config_dir, char *config_full_path)
 {
@@ -118,8 +299,8 @@ int
 get_db_path(char *dest_dir, char *dest_full)
 {
     int     standard_exists;
-    char    config_home[PATH_MAX_LENGTH];
     char   *xdg_config_home;
+    char    config_home[PATH_MAX_LENGTH];
     char    config_full[PATH_MAX_LENGTH];
 
     xdg_config_home = getenv("XDG_CONFIG_HOME");
@@ -136,7 +317,7 @@ get_db_path(char *dest_dir, char *dest_full)
         wordfree(&p);
     }
 
-    if (strncmp(&config_home[strlen(config_home)], "/", 1)!=0) {
+    if (strncmp(&config_home[strlen(config_home)], "/", 1) != 0) {
         strlcat(config_home, "/", PATH_MAX_LENGTH);
     }
 

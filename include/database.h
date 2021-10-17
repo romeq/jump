@@ -5,14 +5,14 @@
 #ifndef MCD_DATABASE_H
 #define MCD_DATABASE_H
 
-#define DB_DIR "$HOME/.config/mcd"
+#define DB_DIR "$HOME/.config/jump"
 #define DB_FILENAME "config.db"
 
-struct DBHandler {
-    sqlite3    *db_connection;
-    int         status;
-};
-
-int init_db(struct DBHandler *);
+sqlite3    *init_db();
+int         find_record_by_alias(const char *, sqlite3 *, char*);
+int         reset_table(sqlite3 *);
+int         delete_record_by_alias(const char *, sqlite3 *);
+int         alias_exists(const char *, sqlite3 *);
+int         new_path(const char *, const char *, sqlite3 *);
 
 #endif //MCD_DATABASE_H

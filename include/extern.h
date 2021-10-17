@@ -7,5 +7,7 @@
 
 #define PATH_MAX_LENGTH 256
 #define ALIAS_MAX_LENGTH 128
+#define SQL_STMT_MAX_LENGTH 128
+#define STDIN_MAX_LENGTH 64
 
 #endif //MCD_EXTERN_H

@@ -92,23 +92,26 @@ parse_flags(int argc, char **argv, struct arguments *args)
     int option;
 
     for (option = 1; option < argc && argv[option][0] == '-'; option++) {
-        switch (argv[option][1]) {
-            case 'd':
-                args->arg_delete_alias = 1;
-                ++flag_count;
-                break;
-            case 'r':
-                args->reset_database = 1;
-                ++flag_count;
-                break;
-            case 'h':
-                args->help = 1;
-                ++flag_count;
-                break;
-            default:
-                fprintf(stderr, "Invalid flag: '%s'\n",
-                        argv[option]);
-                return -1;
+
+        if (strlen(argv[option]) <= 2) {
+            switch (argv[option][1]) {
+                case 'd':
+                    args->arg_delete_alias = 1;
+                    ++flag_count;
+                    break;
+                case 'r':
+                    args->reset_database = 1;
+                    ++flag_count;
+                    break;
+                case 'h':
+                    args->help = 1;
+                    ++flag_count;
+                    break;
+                default:
+                    fprintf(stderr, "Invalid flag: '%s'\n",
+                            argv[option]);
+                    return -1;
+            }
         }
 
     }

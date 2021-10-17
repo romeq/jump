@@ -9,5 +9,7 @@ void usage();
 void verbose_usage();
 void print_critical(char *message);
 void print_err(char *message);
+int  raw_confirm(char *message);
+int  confirm(char *message);
 
 #endif //MCD_UTILS_H

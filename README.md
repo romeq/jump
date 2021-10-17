@@ -1,4 +1,4 @@
-# MCD - Modern CD
+# Jump
 Easy alternative for long path aliases in shell configuration files (boring).
 
 ## Motivation
@@ -12,13 +12,19 @@ Myself, I don't really _love_ moving along the linux filesystem when it comes to
 To prevent this, this app can store paths of your choice, so you can access them easier later on.
 
 ## Installation 
-The easiest way to install is __GitHub's releases__ feature. That way you can download already compiled binary, and do whatever you want to do. More information below at `Downloading from release`.
+The easiest way to install is __GitHub's releases__ feature. 
+That way you can download already compiled binary, and do whatever you want to do. 
+More information below at `Downloading from release`.
 
-Another possibility is to download and compile manually from source. You can do that if you want to contribute or just want to check source code yourself before running. 
+Another possibility is to download and compile manually from source. 
+You can do that if you want to contribute or just want to check source code yourself before running. 
 
 ### Downloading from release
-You can download the latest version from GitHub's [`releases`](https://github.com/toke8677/mcd/releases) tab.
-**Optional**: After that, you may want to move mcd to `/usr/local/bin/`, so you can access it later just by running `mcd` and not `/path/to/mcd`. This can be done by running `mv mcd /usr/local/bin/mcd`.
+You can download the latest version from GitHub's [`releases`](https://github.com/toke8677/jump/releases) tab.
+
+**Optional**: After that, you may want to move jmp to `/usr/local/bin/`, 
+so you can access it later just by running `jmp` and not `/path/to/jmp`.
+This can be done by running `mv jmp /usr/local/bin/jmp`.
 
 ### Installing from source
 This option can be better for development, contributing, or you may just want to be sure you downloaded the correct binary. 
@@ -28,10 +34,10 @@ Though, if you want, you can download the source and build it locally:
 
 ```sh
 # HTTP - use if you haven't got ssh-keys set up in Github
-$ git clone git@github.com:toke8677/mcd.git
+> git clone git@github.com:toke8677/jump.git
 
 # ssh - use if you've got ssh-keys set up in Github
-$ git clone git@github.com:toke8677/mcd.git
+> git clone git@github.com:toke8677/jump.git
 ```
 
 #### Compiling
@@ -39,10 +45,10 @@ After download, you should be able to compile the project with make:
 
 ```sh
 # clean object files and compile with optimization flags 
-$ make clean release
+> make clean release
 
 # Optional: make available anywhere
-$ cp mcd /usr/local/bin/mcd
+> cp jump /usr/local/bin/jump
 ```
 
 ## Documentation
@@ -52,10 +58,10 @@ It *may* be easier to read a simple documentation than reading the source code t
 To use a path, you can use a simple shell trick called command substitution like following:
 
 ```shell
-$ cd $(./mcd [alias]) 
+$ cd $(./jump [alias]) 
 ```
 
-`./mcd [alias]`  returns the `path` linked to given `alias` argument, command substitution then replaces the command inside `$()` with the command's output so that `cd` can use it.
+`./jmp <alias>`  returns the `path` linked to given `alias` argument, command substitution then replaces the command inside `$()` with the command's output so that `cd` can use it.
 
 For more information about command substitution, check [this](https://www.linuxjournal.com/article/7385) article's "command substitution" entry.
 
@@ -63,23 +69,23 @@ For more information about command substitution, check [this](https://www.linuxj
 You can easily save a new path for later like following
 
 ```sh
-# usage: mcd [flags] [alias] [long path] 
-$ ./mcd website /var/www/html 
+# usage: jump [flags] [alias] [long path] 
+$ ./jump website /var/www/html 
 ```
 
 ### Deleting a new path
 To delete a path, just put `-d` flag
 
 ```sh
-# usage: mcd [flags] [alias] [long path] 
-$ ./mcd -d website
+# usage: jump [flags] [alias] [long path] 
+$ ./jump -d website
 ```
 
 ### Updating existing path
 To update an existing path, just reassign a value to it like following
 
 ```sh
-$ ./mcd website /var/www/my_website
+$ ./jump website /var/www/my_website
 ```
 
 ## File structure
