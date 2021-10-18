@@ -5,6 +5,8 @@
 #ifndef JUMP_DATABASE_H
 #define JUMP_DATABASE_H
 
+#include <sqlite3.h>
+
 #define DB_DIR "$HOME/.config/jump"
 #define DB_FILENAME "config.db"
 
@@ -14,5 +16,5 @@ int         reset_table(sqlite3 *);
 int         delete_record_by_alias(const char *, sqlite3 *);
 int         alias_exists(const char *, sqlite3 *);
 int         new_path(const char *, const char *, sqlite3 *);
-
+int         show_all(sqlite3 *controller, sqlite3_callback callback);
 #endif //JUMP_DATABASE_H

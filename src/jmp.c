@@ -13,6 +13,7 @@
 #include "../include/utils.h"
 
 int handle_arguments(struct arguments *, int, sqlite3 *);
+int show_all_callback(void *, int, char **, char **);
 
 int
 main(int argc, char *argv[])
@@ -34,13 +35,24 @@ main(int argc, char *argv[])
 }
 
 int
+show_all_callback(void *_unused, int count, char **column_value, char **column_name)
+{
+    // suppress warnings of unused parameters e.g. tell compiler we don't use them
+    (void)(_unused);
+    (void)(count);
+    (void)(column_name);
+
+    printf("[%s] %s -> %s\n",
+           column_value[0], column_value[1], column_value[2]);
+    return 0;
+}
+
+int
 handle_arguments(struct arguments *args, int argc, sqlite3 *controller)
 {
     if (argc == 2) {
         if (args->help == 1) {
             verbose_usage();
-
-            return 0;
         }
 
         if (args->reset_database == 1) {
@@ -50,12 +62,14 @@ handle_arguments(struct arguments *args, int argc, sqlite3 *controller)
                     return -1;
                 } else {
                     printf("(SUCCESS) Process succeeded :)\n");
-                    return 0;
                 }
             } else {
-                printf("Abort.\n");
-                return 0;
+                printf("Bye!\n");
             }
+        }
+
+        if (args->show_all == 1) {
+            show_all(controller, show_all_callback);
         }
 
         if (strlen(args->alias) > 0) {

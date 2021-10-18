@@ -53,12 +53,20 @@ parse_and_populate_args(int argc, char **argv, struct arguments *args)
 
         switch(argc) {
             case 2:
+                if (argv[1][0] == '-')
+                    return 0;
+
                 if (strlcpy(args->alias, argv[1], sizeof(args->alias)) > PATH_MAX_LENGTH) {
                     print_critical(pred_buf_overflow_msg);
                     return -1;
                 }
                 break;
             case 3:
+                if (argv[1][0] == '-' || argv[2][0] == '-') {
+                    print_err("Arguments can not be flags!");
+                    return -1;
+                }
+
                 if (strlcpy(args->alias, argv[1], sizeof(args->alias)) > PATH_MAX_LENGTH) {
                     print_critical(pred_buf_overflow_msg);
                     return -1;
@@ -107,6 +115,10 @@ parse_flags(int argc, char **argv, struct arguments *args)
                     args->help = 1;
                     ++flag_count;
                     break;
+                case 'a':
+                    args->show_all = 1;
+                    ++flag_count;
+                    break;
                 default:
                     fprintf(stderr, "Invalid flag: '%s'\n",
                             argv[option]);
@@ -133,6 +145,7 @@ populate_struct_defaults(struct arguments *options)
     options->help = 0;
     options->arg_delete_alias = 0;
     options->reset_database = 0;
+    options->show_all = 0;
 
     return 0;
 }

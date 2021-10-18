@@ -10,9 +10,10 @@
 struct arguments {
     char alias[ALIAS_MAX_LENGTH];
     char path[PATH_MAX_LENGTH];
-    u_int8_t help: 1;
-    u_int8_t arg_delete_alias: 1;
-    u_int8_t reset_database: 1;
+    unsigned int help: 1;
+    unsigned int arg_delete_alias: 1;
+    unsigned int reset_database: 1;
+    unsigned int show_all: 1;
 };
 
 int parse_arguments(struct arguments *args, int argc, char **argv);

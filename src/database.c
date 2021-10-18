@@ -39,6 +39,28 @@ init_db() {
 }
 
 int
+show_all(sqlite3 *controller, sqlite3_callback callback)
+{
+    if (controller == NULL) {
+        print_err("Function passed null pointer, exit");
+        return -1;
+    }
+
+    int rc;
+    const char *sql = "SELECT * FROM config;";
+
+    rc = sqlite3_exec(controller,sql, callback, 0, NULL);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "(%s) Unable to execute query: %s\n",
+                "ERROR", sqlite3_errmsg(controller));
+
+        return -1;
+    }
+
+    return 0;
+}
+
+int
 new_path(const char *alias, const char *path, sqlite3 *controller)
 {
     int rc;
@@ -136,7 +158,7 @@ reset_table(sqlite3 *controller)
     return 0;
 }
 
-// I know, I know. It's unnecessary, but it may help in future if there is more actions.
+// Executes single query
 int
 execute_query(const char *query, sqlite3 *controller)
 {
@@ -156,28 +178,7 @@ execute_query(const char *query, sqlite3 *controller)
         sqlite3_free(errmsg);
         return -1;
     }
-
     sqlite3_free(errmsg);
-    return 0;
-}
-
-// Creates table if it does not exist already; e.g. setup database
-int
-populate_with_defaults(sqlite3 *controller)
-{
-    char *sql_statement = "CREATE TABLE IF NOT EXISTS config("\
-        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-        "alias VARCHAR(255) NOT NULL,"\
-        "path VARCHAR(255) NOT NULL,"\
-        "UNIQUE(alias)"\
-    ")";
-
-    if (execute_query(sql_statement, controller) < 0) {
-        fprintf(stderr, "Unable to execute query (@%s): %s\n",
-                __func__, sqlite3_errmsg(controller));
-        return -1;
-    }
-
     return 0;
 }
 
@@ -257,6 +258,26 @@ find_record_by_alias(const char *keyword, sqlite3 *controller, char *dest)
                    sqlite3_errmsg(controller));
             sqlite3_finalize(statement);
             return -1;
+    }
+
+    return 0;
+}
+
+// Creates table if it does not exist already; e.g. setup database
+int
+populate_with_defaults(sqlite3 *controller)
+{
+    char *sql_statement = "CREATE TABLE IF NOT EXISTS config("\
+                                "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                                "alias VARCHAR(255) NOT NULL,"\
+                                "path VARCHAR(255) NOT NULL,"\
+                                "UNIQUE(alias)"\
+                            ")";
+
+    if (execute_query(sql_statement, controller) < 0) {
+        fprintf(stderr, "Unable to execute query (@%s): %s\n",
+                __func__, sqlite3_errmsg(controller));
+        return -1;
     }
 
     return 0;
