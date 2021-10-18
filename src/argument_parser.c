@@ -100,7 +100,11 @@ parse_flags(int argc, char **argv, struct arguments *args)
     int option;
 
     for (option = 1; option < argc && argv[option][0] == '-'; option++) {
-
+        if (strlen(argv[option]) != 2) {
+            fprintf(stderr, "Invalid flag: '%s'\n",
+                    argv[option]);
+            return -1;
+        }
         if (strlen(argv[option]) <= 2) {
             switch (argv[option][1]) {
                 case 'd':
