@@ -11,8 +11,9 @@
 void
 usage()
 {
-    fprintf(stderr, "Use alias: \"./jmp [alias]\". To use it with cd, use command substitution\n");
-    fprintf(stderr, "For full help menu, use the -h flag.\n");
+    fprintf(stderr, "Use alias:\t jmp [alias]\n" \
+                    "Show all:\t jmp -a\n" \
+                    "Help menu:\t jmp -h\n");
 }
 
 void
