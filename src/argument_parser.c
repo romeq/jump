@@ -119,7 +119,7 @@ parse_flags(int argc, char **argv, struct arguments *args)
                     args->help = 1;
                     ++flag_count;
                     break;
-                case 'a':
+                case 'l':
                     args->show_all = 1;
                     ++flag_count;
                     break;
