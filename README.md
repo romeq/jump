@@ -104,24 +104,20 @@ $ jmp website /var/www/my_website
 
 ### Resetting database
 
-Which may be done with `-r` flag. 
+may be done with `-r` flag. 
 
 ```sh
 $ jmp -r
 ```
 
-## File structure
+### List all aliases
 
-What does any of these files even contain?
+can be done with `-l` flag
 
-### main.c
-`main.c` contains the *core* of this program. It determines how things go, in which order, and handles errors.
+```sh
+$ jmp -l
+```
 
-### tests.c
-`tests.c` contains some tests for database and the base program
+## License
 
-### database.c
-`database.c` contains the database handler and other database related stuff.
-
-### utils.c
-`utils.c` contains some helping functions for other modules such as help menu, etc.
+This software is licensed under [`GNU Affero General Public License v3.0`](https://www.gnu.org/licenses/agpl-3.0.en.html).
