@@ -1,5 +1,5 @@
 CC=clang
-CFLAGS+=-Wall -Wextra
+CFLAGS+=-Wall -Wextra -lsqlite3
 RELEASE_FLAGS=-O3
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:c=o)
