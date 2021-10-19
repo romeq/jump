@@ -1,28 +1,28 @@
 CC=clang
 CFLAGS+=-Wall -Wextra
-CFLAGS+=-lsqlite3
 RELEASE_FLAGS=-O3
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:c=o)
-OS=$(shell uname)
-
-ifeq ($(OS), Linux)
-	CFLAGS += -I /usr/local/include/linux
-	CURSESFLAGS+=-lbsd
-endif
+OS = $(shell uname)
 
 ifeq ($(OS), OpenBSD)
-	CFLAGS += -I /usr/local/include
+	CFLAGS+=-lbsd
+endif
+ifeq ($(OS), Linux)
+	CFLAGS+=-lbsd
 endif
 
 jmp: $(OBJ)
-	echo $?
 	$(CC) $(CFLAGS) $^ -o jmp
 
 release: $(OBJ)
 	$(CC) $(CFLAGS) $(RELEASE_FLAGS) $^ -o jmp
 
 .c.o:
+	file = $($<)
+	ifeq ($(file), "src/database.c")
+		CFLAGS+=-lsqlite3
+	endif
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 all: jmp

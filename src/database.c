@@ -14,6 +14,14 @@
 #include "../include/utils.h"
 #include "../include/database.h"
 
+#ifdef __OpenBSD__
+    #include <bsd/string.h>
+#endif
+
+#ifdef __linux__
+    #include <bsd/string.h>
+#endif
+
 int         find_record_by_path(const char *, sqlite3 *, char *);
 int         validate_DB_existence(char *, char *);
 int         get_db_path(char *, char *);
