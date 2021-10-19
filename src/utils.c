@@ -11,8 +11,9 @@
 void
 usage()
 {
-    fprintf(stderr, "Use alias: \"./jmp [alias]\". To use it with cd, use command substitution\n");
-    fprintf(stderr, "For full help menu, use the -h flag.\n");
+    fprintf(stderr, "Use alias:\t jmp <alias>\n" \
+                    "Show all:\t jmp -l\n" \
+                    "Help menu:\t jmp -h\n");
 }
 
 void
@@ -24,8 +25,9 @@ verbose_usage()
     printf("Reset database:\t jmp -r\n\n");
     printf("Optional flags:\n");
     printf("\t-h: Show help menu\n");
-    printf("\t-d: Delete alias. Alias argument required.\n");
-    printf("\t-r: Reset database. This flag must be used alone, and asks for confirmation before continuing.\n");
+    printf("\t-l: Show all aliases\n");
+    printf("\t-d: Delete alias. alias argument required\n");
+    printf("\t-r: Reset database. Must be used alone, asks for clear confirmation before continuing\n");
 }
 
 void
@@ -51,11 +53,11 @@ int raw_confirm(char *message) {
 }
 
 int confirm(char *message) {
-    printf("%s\n(y/N): ", message);
+    printf("%s (y/N): ", message);
 
     char input[STDIN_MAX_LENGTH];
     fgets(input, STDIN_MAX_LENGTH - 1, stdin);
     input[strcspn(input, "\r\n\t")] = 0;
 
-    return strncmp(input, "y", sizeof(input)) == 0;
+    return strncasecmp(input, "y", sizeof(input)) == 0;
 }
