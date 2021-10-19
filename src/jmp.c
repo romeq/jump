@@ -78,10 +78,12 @@ handle_arguments(struct arguments *args, int argc, sqlite3 *controller)
             int err = find_record_by_alias(args->alias, controller, result);
             if (err < 0)
                 return -1;
-
-            if (strncmp(result, "\0", PATH_MAX_LENGTH - 1) != 0)
+            else if (err == SQLITE_DONE) {
+                print_err("Not found!");
+                return -1;
+            }
+            else if (err == SQLITE_ROW)
                 printf("%s\n", result); // result found!
-
         }
 
     }
@@ -91,7 +93,6 @@ handle_arguments(struct arguments *args, int argc, sqlite3 *controller)
                 return -1;
             else
                 printf("(%s) Record deleted\n", "SUCCESS");
-
             return 0;
         }
 
@@ -109,10 +110,9 @@ handle_arguments(struct arguments *args, int argc, sqlite3 *controller)
             }
 
             if (new_path(args->alias, absolute_path, controller) < 0) {
-                print_err("Couldn't finish query, error occurred");
                 return -1;
             } else {
-                printf("%s\n", absolute_path); // created
+                printf("Saved!\n"); // created
                 return 0;
             }
         }
