@@ -1,11 +1,11 @@
 CC=clang
-CFLAGS+=-Wall -Wextra -lbsd
-CFLAGS+=-l sqlite3
+CFLAGS+=-Wall -Wextra
+CFLAGS+=-lsqlite3 -lbsd
 RELEASE_FLAGS=-O3
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:c=o)
 
-jump: $(OBJ)
+jmp: $(OBJ)
 	$(CC) $(CFLAGS) $^ -o jmp
 
 release: $(OBJ)
@@ -14,7 +14,7 @@ release: $(OBJ)
 .c.o:
 	$(CC) -o $@ -c $< $(CFLAGS)
 
-all: jump
+all: jmp
 
 clean:
 	rm -f src/*.o
