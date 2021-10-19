@@ -60,10 +60,11 @@ Everyone loves documentations. Especially when they are well-written.
 To use a path, you can use a simple shell trick called command substitution like following:
 
 ```shell
-$ cd $(jmp [alias]) 
+$ cd $(jmp <alias>)
 ```
 
-`./jmp <alias>`  returns the `path` linked to given `alias` argument, command substitution then replaces the command inside `$()` with the command's output so that `cd` can use it.
+`jmp <alias>` returns the `path` linked to `alias` argument, command substitution then replaces the command inside `$()` with the command's output so that `cd` can use it.
+So, `cd $(jmp <alias>)` is translated to `cd (output of jump)`.
 
 For more information about command substitution, check [this](https://www.linuxjournal.com/article/7385) article's "command substitution" entry.
 
@@ -72,7 +73,7 @@ For more information about command substitution, check [this](https://www.linuxj
 You can create function in your `.zshrc/.bashrc` file to automate this. Function can be something like following:
 
 ```sh
-function jumpto() {
+function jumpTo() {
 	cd $(jmp $1); # where $1 is the first argument after jumpto
 }
 ```
@@ -83,7 +84,7 @@ After reinitializing shell you may use it with `jumpto <alias>`.
 You can easily save a new path for later like following
 
 ```sh
-# usage: jump [flags] [alias] [long path] 
+# usage: jump [flags] <alias> [long path] 
 $ jump website /var/www/html 
 ```
 
@@ -91,15 +92,15 @@ $ jump website /var/www/html
 To delete a path, just put `-d` flag
 
 ```sh
-# usage: jump [flags] [alias] [long path] 
-$ jmp -d website
+# usage: jump [flags] <alias> [long path] 
+$ jmp -d website
 ```
 
 ### Updating existing path
 To update an existing path, just reassign a value to it like following
 
 ```sh
-$ jmp website /var/www/my_website
+$ jmp website /var/www/my_website
 ```
 
 ### Resetting database
@@ -114,11 +115,17 @@ $ jmp -r
 
 What does any of these files even contain?
 
+<<<<<<< dev
 ### main.c
 `main.c` contains the *core* of this program. It determines how things go, in which order, and handles errors.
 
 ### tests.c
 `tests.c` contains some tests for database and the base program
+=======
+```sh
+$ jmp -l
+```
+>>>>>>> local
 
 ### database.c
 `database.c` contains the database handler and other database related stuff.
