@@ -100,8 +100,7 @@ parse_flags(int argc, char **argv, struct arguments *args)
     int option;
 
     for (option = 1; option < argc && argv[option][0] == '-'; option++) {
-
-        if (strlen(argv[option]) <= 2) {
+        if (strlen(argv[option]) == 2) {
             switch (argv[option][1]) {
                 case 'd':
                     args->arg_delete_alias = 1;
@@ -115,15 +114,19 @@ parse_flags(int argc, char **argv, struct arguments *args)
                     args->help = 1;
                     ++flag_count;
                     break;
-                case 'a':
+                case 'l':
                     args->show_all = 1;
                     ++flag_count;
                     break;
                 default:
-                    fprintf(stderr, "Invalid flag: '%s'\n",
+                    fprintf(stderr, "(ERROR) Invalid flag: '%s'\n",
                             argv[option]);
                     return -1;
             }
+        } else {
+            fprintf(stderr, "(ERROR) Invalid flag: '%s'\n",
+                    argv[option]);
+            return -1;
         }
 
     }
