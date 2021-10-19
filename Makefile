@@ -19,10 +19,6 @@ release: $(OBJ)
 	$(CC) $(CFLAGS) $(RELEASE_FLAGS) $^ -o jmp
 
 .c.o:
-	file = $($<)
-	ifeq ($(file), "src/database.c")
-		CFLAGS+=-lsqlite3
-	endif
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 all: jmp
