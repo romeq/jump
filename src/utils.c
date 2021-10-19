@@ -11,13 +11,8 @@
 void
 usage()
 {
-<<<<<<< HEAD
-    fprintf(stderr, "Use alias:\t jmp [alias]\n" \
-                    "Show all:\t jmp -a\n" \
-=======
     fprintf(stderr, "Use alias:\t jmp <alias>\n" \
                     "Show all:\t jmp -l\n" \
->>>>>>> dev
                     "Help menu:\t jmp -h\n");
 }
 
