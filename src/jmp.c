@@ -112,7 +112,7 @@ handle_arguments(struct arguments *args, int argc, sqlite3 *controller)
             }
 
             char absolute_path[PATH_MAX_LENGTH];
-            if (realpath(args->path, absolute_path) < 0) {
+            if (*realpath(args->path, absolute_path) == -1) {
                 print_err("Failed to get absolute path");
                 return -1;
             }
