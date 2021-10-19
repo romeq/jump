@@ -8,6 +8,14 @@
 #include "../include/extern.h"
 #include "../include/utils.h"
 
+#ifdef __OpenBSD__
+    #include <bsd/string.h>
+#endif
+
+#ifdef __linux__
+    #include <bsd/string.h>
+#endif
+
 void
 usage()
 {

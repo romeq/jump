@@ -9,6 +9,14 @@
 #include "../include/extern.h"
 #include "../include/argument_parser.h"
 
+#ifdef __OpenBSD__
+    #include <bsd/string.h>
+#endif
+
+#ifdef __linux__
+    #include <bsd/string.h>
+#endif
+
 int populate_struct_defaults(struct arguments *options);
 int parse_flags(int argc, char **argv, struct arguments *args);
 int parse_and_populate_args(int argc, char **argv, struct arguments *args);
