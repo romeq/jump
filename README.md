@@ -1,5 +1,4 @@
-# Jump
-
+# Jump 
 Easy alternative for long path aliases in shell configuration files (boring).
 
 ## Motivation
@@ -13,6 +12,7 @@ Myself, I don't really _love_ moving along the linux filesystem when it comes to
 To prevent this, this app can store paths of your choice, so you can access them easier later on.
 
 ## Installation 
+
 The easiest way to install is __GitHub's releases__ feature. 
 That way you can download already compiled binary, and do whatever you want to do. 
 More information below at `Downloading from release`.
@@ -20,7 +20,23 @@ More information below at `Downloading from release`.
 Another possibility is to download and compile manually from source. 
 You can do that if you want to contribute or just want to check source code yourself before running. 
 
+### Requirements
+
+There is couple of required libraries what you need to install before compiling. They are listed down below.
+
+- libbsd-dev
+- libsqlite3-dev
+
+#### libbsd-dev
+
+Gives us `strlcpy(), strlcat()` functions to prevent buffer overflow when managing data inside this program.
+
+#### libsqlite3-dev
+
+`libsqlite3-dev` offers us library which we can treat data and manage connections in database with.
+
 ### Downloading from release
+
 You can download the latest version from GitHub's [`releases`](https://github.com/toke8677/jump/releases) tab.
 
 **Optional**: After that, you may want to move jmp to `/usr/local/bin/`, 
