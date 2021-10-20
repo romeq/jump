@@ -27,7 +27,8 @@ int whatsthis(int argc, char **argv);
 int
 parse_arguments(struct arguments *args, int argc, char **argv)
 {
-    whatsthis(argc, argv);
+    if (whatsthis(argc, argv) < 0)
+        exit(0);
 
     populate_struct_defaults(args);
 
@@ -106,19 +107,21 @@ whatsthis(int argc, char **argv)
     if (argc != 3) return 0;
 
     time_t show_egg;
-    srand(time(&show_egg) / 2);
-    if (rand() % 5 == 2){
-        if (strncmp(argv[2], "give", ALIAS_MAX_LENGTH) == 0) {
-            if (strncmp(argv[1], "cookie", PATH_MAX_LENGTH) == 0) {
+    srand(time(&show_egg));
+    if (rand() % 10 == 5){
+        if (strncmp(argv[1], "give", ALIAS_MAX_LENGTH) == 0) {
+            if (strncmp(argv[2], "cookie", PATH_MAX_LENGTH) == 0) {
                 char uwuified_responses[4][64] = {
-                        "c-cookie? thank you *blushes*",
-                        "thank y-you U-UwU (≧◡≦)",
-                        "c-cookie? t-thanks uwu",
-                        "c-cookie? *blushes* (≧◡≦)",
+                    "c-cookie? thank you *blushes*",
+                    "thank y-you U-UwU (≧◡≦)",
+                    "c-cookie? t-thanks uwu",
+                    "c-cookie? *blushes* (≧◡≦)",
                 };
                 time_t response_num;
                 srand(time(&response_num));
                 printf("%s\n", uwuified_responses[rand() % 4]);
+
+                return -1;
             }
         }
     }
