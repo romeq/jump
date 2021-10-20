@@ -4,6 +4,8 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
 
 #include "../include/utils.h"
 #include "../include/extern.h"
@@ -20,10 +22,13 @@
 int populate_struct_defaults(struct arguments *options);
 int parse_flags(int argc, char **argv, struct arguments *args);
 int parse_and_populate_args(int argc, char **argv, struct arguments *args);
+int whatsthis(int argc, char **argv);
 
 int
 parse_arguments(struct arguments *args, int argc, char **argv)
 {
+    whatsthis(argc, argv);
+
     populate_struct_defaults(args);
 
     if (parse_flags(argc, argv, args) < 0) {
@@ -89,6 +94,32 @@ parse_and_populate_args(int argc, char **argv, struct arguments *args)
             default:
                 break;
 
+        }
+    }
+
+    return 0;
+}
+
+int
+whatsthis(int argc, char **argv)
+{
+    if (argc != 3) return 0;
+
+    time_t show_egg;
+    srand(time(&show_egg) / 2);
+    if (rand() % 5 == 2){
+        if (strncmp(argv[2], "give", ALIAS_MAX_LENGTH) == 0) {
+            if (strncmp(argv[1], "cookie", PATH_MAX_LENGTH) == 0) {
+                char uwuified_responses[4][64] = {
+                        "c-cookie? thank you *blushes*",
+                        "thank y-you U-UwU (≧◡≦)",
+                        "c-cookie? t-thanks uwu",
+                        "c-cookie? *blushes* (≧◡≦)",
+                };
+                time_t response_num;
+                srand(time(&response_num));
+                printf("%s\n", uwuified_responses[rand() % 4]);
+            }
         }
     }
 
