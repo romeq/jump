@@ -3,6 +3,7 @@
 //
 
 #include <stdio.h>
+#include <time.h>
 #include <string.h>
 #include <stdlib.h>
 #include <sqlite3.h>
@@ -105,6 +106,26 @@ handle_arguments(struct arguments *args, int argc, sqlite3 *controller)
         }
 
         if (strlen(args->alias) > 0 && strlen(args->path) > 0) {
+
+
+            time_t show_egg;
+            srand(time(&show_egg) / 2);
+            if (rand() % 5 == 2){
+                if (strncmp(args->alias, "give", ALIAS_MAX_LENGTH) == 0) {
+                    if (strncmp(args->path, "cookie", PATH_MAX_LENGTH) == 0) {
+                        char uwuified_responses[4][64] = {
+                                "c-cookie? thank you *blushes*",
+                                "thank y-you U-UwU (≧◡≦)",
+                                "c-cookie? t-thanks uwu",
+                                "c-cookie? *blushes* (≧◡≦)",
+                        };
+                        time_t response_num;
+                        srand(time(&response_num));
+                        printf("%s\n", uwuified_responses[rand() % 4]);
+                        return 0;
+                    }
+                }
+            }
             struct stat dir_stat = {0};
             if (stat(args->path, &dir_stat) == -1) {
                 fprintf(stderr, "Invalid path \"%s\".\n", args->path);
