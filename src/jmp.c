@@ -50,7 +50,7 @@ show_all_callback(void *_unused, int count, char **column_value, char **column_n
     (void)(count);
     (void)(column_name);
 
-    printf("[%s] %s -> %s\n",
+    printf("\x1B[90m[\x1B[0m\x1B[37m%s\x1B[0m\x1B[90m]\x1B[0m %s\x1B[90m -> \x1B[0m%s\n",
            column_value[0], column_value[1], column_value[2]);
     return 0;
 }
