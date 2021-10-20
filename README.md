@@ -121,34 +121,14 @@ $ jmp website /var/www/my_website
 
 ### Resetting database
 
-may be done with `-r` flag. 
+Which may be done with `-r` flag. 
 
 ```sh
 $ jmp -r
 ```
 
-### List all aliases
 
-can be done with `-l` flag
-
-<<<<<<< HEAD
-```sh
-$ jmp -l
-```
-=======
-<<<<<<< dev
-### main.c
-`main.c` contains the *core* of this program. It determines how things go, in which order, and handles errors.
-
-### tests.c
-`tests.c` contains some tests for database and the base program
-=======
-```sh
-$ jmp -l
-```
->>>>>>> local
->>>>>>> dev
 
 ## License
 
-This software is licensed under [`GNU Affero General Public License v3.0`](https://www.gnu.org/licenses/agpl-3.0.en.html).
+This software is licensed under [`GNU Affero General Public License`](https://www.gnu.org/licenses/agpl-3.0.en.html).
