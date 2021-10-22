@@ -123,21 +123,17 @@ $ jmp -d website
 To update an existing path, just reassign a value to it like following
 
 ```sh
-$ jmp website /var/www/my_website
+$ jmp website /newpath
 Update information: [ /oldpath -> /newpath ]
 Want to proceed? (y/N):
 ```
 
 ### Resetting database
-
 Removing all aliases may be done with `-r` flag. 
 
 ```sh
 $ jmp -r
 ```
 
-
-
 ## License
-
 This software is licensed under [`GNU Affero General Public License`](https://www.gnu.org/licenses/agpl-3.0.en.html).
