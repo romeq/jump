@@ -74,7 +74,6 @@ $ cp jump /usr/local/bin/jump
 Everyone loves documentations. Especially when they are well written.
 
 ### Using an alias
-
 To use a path, you can use a simple shell trick called command substitution like following:
 
 ```shell
