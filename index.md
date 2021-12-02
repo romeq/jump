@@ -1,3 +1,4 @@
+# Jump
 Alternative for long path aliases in shell configuration files.
 
 ## Motivation
