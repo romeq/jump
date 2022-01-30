@@ -4,10 +4,6 @@ Easy alternative for long path aliases in shell configuration files (boring).
 ## Motivation
 You may just want a faster way to navigate in your filesystem chaos (like I did), or just get rid of always making alias for a path in your shell configuration file. This software is exactly for that.
 
-I've noticed [`weezel`](https://github.com/weezel) has made same kind of project, and thought it would be fun to create it myself.
-Credits to him. 
-I don't exactly want to *copy* him in this project, but to practice my skills as I haven't done much with C.
-
 Myself, I don't really _love_ moving along the linux filesystem when it comes to longer paths.
 To prevent this, this app can store paths of your choice, so you can access them easier later on with custom alias.
 
@@ -71,7 +67,7 @@ $ cp jump /usr/local/bin/jump
 ```
 
 ## Documentation
-Everyone loves documentations. Especially when they are well written.
+Everyone loves docs.
 
 ### Using an alias
 To use a path, you can use a simple shell trick called command substitution like following:
